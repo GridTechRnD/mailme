@@ -45,8 +45,6 @@ async function main() {
     const password : string = process.env.PASSWORD || '';
     const secret : string = process.env.SECRET || '';
     
-    console.log(req);
-
     // Ajuste para ler o body corretamente
     const info_req = JSON.parse(req.body.data);
     const user = info_req.user;
