@@ -1,0 +1,21 @@
+node_modules
+# Keep environment variables out of version control
+.env
+
+curl_commands.txt
+
+id_search_options.php.bkp
+
+.config.ini
+
+/teste_de_envio/
+
+/font/
+
+index.ts.bkp
+
+appSettings.ts
+
+auth.ts
+
+log.log
