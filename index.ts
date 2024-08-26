@@ -14,6 +14,17 @@ import { appendFile, unlink } from 'fs';
 import multer from 'multer';
 dotenv.config();
 
+
+async function verifyToken(req: express.Request, res: express.Response) {
+  const token = req.headers['authorization'];
+  if (!token) return res.status(401).json({ auth: false, message: 'No token provided.' });
+
+  await jwt.verify(token, process.env.SECRET as jwt.Secret, function(err: any, decoded: any) {
+    if (err) return res.status(500).json({ auth: false, message: 'Failed to authenticate token.' });
+  });
+}
+
+
 async function main() {
 
   // Initialize Graph
@@ -22,30 +33,24 @@ async function main() {
   const app = express();
   const upload = multer();
 
+  // app.use(express.urlencoded({ extended: true }));
+
+  // Middleware para processar JSON e URL-encoded data
+  app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
 
-  app.use((req, res, next) => {
-    const token = req.headers['authorization'];
-    if (!token) return res.status(401).json({ auth: false, message: 'No token provided.' });
-
-    jwt.verify(token, process.env.SECRET as jwt.Secret, function(err: any, decoded: any) {
-      if (err) return res.status(500).json({ auth: false, message: 'Failed to authenticate token.' });
-
-      // se tudo estiver ok, salva no request para uso posterior
-      next();
-    });
-  });
-
   //User Authentication
-  app.post('/login', async (req, res, next) => {
+  app.post('/login', upload.none(), async (req, res, next) => {
     const username : string = process.env.USERNAME || '';
     const password : string = process.env.PASSWORD || '';
     const secret : string = process.env.SECRET || '';
-    const info_req : { user: string, password: string } = JSON.parse(req.body.data);
-    app.use(upload.none());
     
+    console.log(req);
+
+    // Ajuste para ler o body corretamente
+    const info_req = JSON.parse(req.body.data);
     const user = info_req.user;
-    const pass = info_req.password;
+    const pass = info_req.password
 
     if(user === username && pass === password){
       //auth ok
@@ -63,12 +68,14 @@ async function main() {
     res.json({ auth: false, token: null });
   })
 
-  app.get('/',(req,res) => {
+  app.get('/',async (req,res) => {
+      await verifyToken(req, res);
       res.send('Hello World');
   })
 
   app.post('/', uploads.array('file[]'), async (req, res)  => {
       try {
+        await verifyToken(req, res);
         let uploaded_files: string[] = [];
         if (Array.isArray(req.files)) {
           for (const file of req.files) {
