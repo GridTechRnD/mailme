@@ -9,9 +9,10 @@ import settings, { AppSettings } from './appSettings';
 import * as graphHelper from './graphHelper';
 import uploads from './uploads';
 import jwt from 'jsonwebtoken';
-import dotenv from 'dotenv';
 import { appendFile, unlink } from 'fs';
 import multer from 'multer';
+import { get } from 'http';
+import dotenv from 'dotenv';
 dotenv.config();
 
 
@@ -29,6 +30,8 @@ async function main() {
 
   // Initialize Graph
   initializeGraph(settings);
+
+  // await getAccessToken(settings);
   
   const app = express();
   const upload = multer();

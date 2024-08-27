@@ -28,7 +28,7 @@ curl -X POST https://url.com/mailme/login -F 'data={"user":"user", "password" :"
 
 The response will be a JSON containing the token. Use this token in subsequent requests.
 
-It is important to read the logs using the command below. A standard Microsoft Graph message will be displayed, providing a URL and a code to validate the login in the browser. Use your Microsoft account, with Microsoft Graph previously configured in the Azure environment, to log in.
+It is important to read the logs using the command below.
 
 ```bash
 pm2 logs

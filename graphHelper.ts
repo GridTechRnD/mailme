@@ -3,13 +3,15 @@
 
 // <UserAuthConfigSnippet>
 import 'isomorphic-fetch';
-import { DeviceCodeCredential, DeviceCodePromptCallback } from '@azure/identity';
+import { DeviceCodeCredential, DeviceCodePromptCallback, UsernamePasswordCredential } from '@azure/identity';
 import { Client, PageCollection } from '@microsoft/microsoft-graph-client';
 import { User, Message } from '@microsoft/microsoft-graph-types';
 import { TokenCredentialAuthenticationProvider } from
   '@microsoft/microsoft-graph-client/authProviders/azureTokenCredentials';
 import { AppSettings } from './appSettings';
 import * as fs from 'fs';
+import dotenv from 'dotenv';
+dotenv.config();
 
 let _settings: AppSettings | undefined = undefined;
 let _deviceCodeCredential: DeviceCodeCredential | undefined = undefined;
@@ -23,13 +25,32 @@ export function initializeGraphForUserAuth(settings: AppSettings, deviceCodeProm
 
   _settings = settings;
 
-  _deviceCodeCredential = new DeviceCodeCredential({
-    clientId: settings.clientId,
-    tenantId: settings.tenantId,
-    userPromptCallback: deviceCodePrompt
-  });
+  
+  let username = process.env.USERNAME || '';
+  let password = process.env.PASSWORD_OUTLOOK || '';
 
-  const authProvider = new TokenCredentialAuthenticationProvider(_deviceCodeCredential, {
+  if (username === '' || password === '') {
+    throw new Error('Username and password must be provided');
+  }
+  
+  const credential = new UsernamePasswordCredential(
+    settings.directory_id,
+    settings.clientId,
+    username,
+    password,
+  );
+
+
+  // _deviceCodeCredential = new DeviceCodeCredential({
+  //   clientId: settings.clientId,
+  //   tenantId: settings.tenantId,
+  //   userPromptCallback: deviceCodePrompt
+  // });
+  // const authProvider = new TokenCredentialAuthenticationProvider(_deviceCodeCredential, {
+  //   scopes: settings.graphUserScopes
+  // });
+
+  const authProvider = new TokenCredentialAuthenticationProvider(credential, {
     scopes: settings.graphUserScopes
   });
 
