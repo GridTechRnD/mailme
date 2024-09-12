@@ -43,6 +43,7 @@ curl -X POST https://url.com/mailme/ -F "file[]=@/caminho/do/arquivo/arquivo_1.t
 ```
 
 To send an email without an attachment, only with a subject and body, use the structure below as a reference:
+
 ```bash
 curl -X POST https://url.com/mailme/  -F "data={\"subject\":\"Assunto\",\"body\":\"Corpo da mensagem\",\"sendto\":\"username@domain.com\"}"   -H "authorization: token"
 ```

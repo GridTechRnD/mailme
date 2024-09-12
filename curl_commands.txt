@@ -1,0 +1,6 @@
+curl -X POST http://localhost:3000/login -F 'data={"user":"user", "password" :"password"}'
+
+curl -X POST http://localhost:3000/ -F "file[]=@/opt/mailme/teste_de_envio/arquivo_1.sql"   -F "data={\"subject\":\"Assunto\",\"body\":\"Corpo da mensagem\",\"sendto\":\"davi.santos@hexing.com.br\"}" -H "authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzI0NzExMTcwLCJleHAiOjE3MjU2MTExNzB9.irsxYyOqT-o6UobRx-rFxeNBiQNw216QFpFuHgpRxq8"
+
+pm2 start index.ts --interpreter ts-node --watch --ignore-watch="uploads teste_de_envio"
+
